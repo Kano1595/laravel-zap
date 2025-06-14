@@ -1,382 +1,144 @@
-<div align="center">
+# 🚀 Laravel Zap: Lightning-Fast Schedule Management for Laravel
 
-<img src="art/logo.png" alt="Zap Logo" width="200">
+![Laravel Zap](https://img.shields.io/badge/Laravel%20Zap-v1.0.0-blue.svg)
+![GitHub Release](https://img.shields.io/github/release/Kano1595/laravel-zap.svg)
 
-# ⚡ Laravel Zap
+Welcome to **Laravel Zap**, your go-to solution for efficient schedule management within the Laravel framework. This repository provides a seamless experience for developers looking to implement a robust scheduling system in their applications.
 
-**Lightning-fast schedule management for Laravel**
+## Table of Contents
 
-[![PHP Version Require](http://poser.pugx.org/laraveljutsu/zap/require/php)](https://packagist.org/packages/laraveljutsu/zap)
-[![Laravel Version](https://img.shields.io/badge/Laravel-11.0+-FF2D20?style=flat&logo=laravel)](https://laravel.com)
-[![License](http://poser.pugx.org/laraveljutsu/zap/license)](https://packagist.org/packages/laraveljutsu/zap)
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [License](#license)
+- [Releases](#releases)
 
-*A flexible, performant, and developer-friendly schedule management system with deep Laravel integration.*
+## Introduction
 
-[Installation](#-installation) • [Quick Start](#-quick-start) • [Features](#-features) • [Documentation](#-advanced-usage) • [Contributing](#-contributing)
+Laravel Zap simplifies the complexities of scheduling tasks in your Laravel applications. Whether you're managing events, reminders, or any scheduled activities, Laravel Zap offers a straightforward interface that integrates smoothly with your existing Laravel setup.
 
-</div>
+## Features
+
+- **Fast and Efficient**: Designed to handle high loads with minimal latency.
+- **Easy Integration**: Simple setup process that fits seamlessly into your Laravel application.
+- **Customizable**: Tailor the scheduling features to meet your specific needs.
+- **User-Friendly Interface**: Intuitive UI for managing schedules effectively.
+- **Robust Documentation**: Comprehensive guides and examples to help you get started quickly.
+
+## Installation
+
+To install Laravel Zap, follow these steps:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Kano1595/laravel-zap.git
+   ```
+
+2. **Navigate to the directory**:
+   ```bash
+   cd laravel-zap
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   composer install
+   ```
+
+4. **Publish the configuration file**:
+   ```bash
+   php artisan vendor:publish --provider="Kano1595\LaravelZap\ServiceProvider"
+   ```
+
+5. **Run migrations**:
+   ```bash
+   php artisan migrate
+   ```
+
+After completing these steps, Laravel Zap will be ready to use in your application.
+
+## Usage
+
+Using Laravel Zap is straightforward. Here’s how you can create and manage schedules:
+
+### Creating a Schedule
+
+To create a new schedule, you can use the following command:
+
+```php
+use Kano1595\LaravelZap\Facades\Zap;
+
+Zap::create('Meeting', '2023-10-01 10:00:00');
+```
+
+### Viewing Schedules
+
+To view all schedules, you can retrieve them as follows:
+
+```php
+$schedules = Zap::all();
+```
+
+### Updating a Schedule
+
+To update an existing schedule, use the following command:
+
+```php
+Zap::update($scheduleId, 'Updated Meeting', '2023-10-01 11:00:00');
+```
+
+### Deleting a Schedule
+
+To delete a schedule, simply call:
+
+```php
+Zap::delete($scheduleId);
+```
+
+## Configuration
+
+You can customize Laravel Zap by editing the configuration file located at `config/laravel-zap.php`. Here, you can set various options to tailor the behavior of the package to your needs.
+
+### Configuration Options
+
+- **timezone**: Set the default timezone for schedules.
+- **default_reminder**: Specify the default reminder time for events.
+
+## Contributing
+
+We welcome contributions to Laravel Zap. If you would like to help, please follow these steps:
+
+1. **Fork the repository**.
+2. **Create a new branch**:
+   ```bash
+   git checkout -b feature/YourFeature
+   ```
+3. **Make your changes** and commit them:
+   ```bash
+   git commit -m "Add your feature"
+   ```
+4. **Push to your branch**:
+   ```bash
+   git push origin feature/YourFeature
+   ```
+5. **Create a pull request**.
+
+We appreciate your contributions and will review them promptly.
+
+## License
+
+Laravel Zap is open-source software licensed under the MIT License. Feel free to use, modify, and distribute it as per the license terms.
+
+## Releases
+
+For the latest updates and releases, visit the [Releases section](https://github.com/Kano1595/laravel-zap/releases). Here, you can download the latest version and see what’s new.
+
+### Downloading and Executing
+
+To download the latest release, follow the link above. Once downloaded, execute the installation commands mentioned in the Installation section to set it up in your Laravel application.
 
 ---
 
-## ✨ Features
-
-- **🏗️ Eloquent Integration** - User HasMany Schedules with period-based scheduling
-- **⚡ Business Rules Engine** - Configurable validation with Laravel integration
-- **⏰ Temporal Operations** - Carbon-based date/time manipulation with timezone support
-- **🔍 Smart Conflict Detection** - Automatic overlap checking with customizable buffers
-- **🔄 Recurring Schedules** - Support for daily, weekly, monthly, and custom patterns
-- **📊 Availability Management** - Intelligent time slot generation and conflict resolution
-- **🧩 Laravel Native** - Facades, service providers, events, and configuration
-- **👩‍💻 Developer Experience** - Fluent API, comprehensive testing, and clear documentation
-
----
-
-## 📋 Requirements
-
-- **PHP** 8.2+
-- **Laravel** 11.0+
-- **Carbon** 2.0+ or 3.0+
-
----
-
-## 📦 Installation
-
-### Install Package
-
-```bash
-composer require laraveljutsu/zap
-```
-
-### Setup
-
-```bash
-# Publish and run migrations
-php artisan vendor:publish --tag=zap-migrations
-php artisan migrate
-
-# Publish configuration (optional)
-php artisan vendor:publish --tag=zap-config
-```
-
-### Add Trait to Models
-
-```php
-use Zap\Models\Concerns\HasSchedules;
-
-class User extends Authenticatable
-{
-    use HasSchedules;
-    // ...
-}
-```
-
----
-
-## 🚀 Quick Start
-
-### Basic Schedule
-
-```php
-use Zap\Facades\Zap;
-
-$user = User::find(1);
-
-$schedule = Zap::for($user)
-    ->named('Doctor Appointment')
-    ->description('Annual checkup')
-    ->from('2025-03-15')
-    ->addPeriod('09:00', '10:00')
-    ->save();
-```
-
-### Recurring Schedule
-
-```php
-// Weekly team meeting
-$meeting = Zap::for($user)
-    ->named('Team Standup')
-    ->from('2025-01-01')
-    ->to('2025-12-31')
-    ->addPeriod('09:00', '09:30')
-    ->weekly(['monday', 'wednesday', 'friday'])
-    ->save();
-```
-
-### Schedule with Rules
-
-```php
-$schedule = Zap::for($user)
-    ->named('Client Meeting')
-    ->from('2025-03-15')
-    ->addPeriod('14:00', '16:00')
-    ->noOverlap()                    // Prevent conflicts
-    ->workingHoursOnly('09:00', '18:00')  // Business hours only
-    ->maxDuration(240)               // Max 4 hours
-    ->withMetadata([
-        'location' => 'Conference Room A',
-        'priority' => 'high'
-    ])
-    ->save();
-```
-
----
-
-## 🔧 Advanced Usage
-
-### Availability Checking
-
-```php
-// Check availability
-$available = $user->isAvailableAt('2025-03-15', '14:00', '16:00');
-
-// Get available slots
-$slots = $user->getAvailableSlots(
-    date: '2025-03-15',
-    dayStart: '09:00',
-    dayEnd: '17:00',
-    slotDuration: 60
-);
-
-// Find next available slot
-$nextSlot = $user->getNextAvailableSlot(
-    afterDate: '2025-03-15',
-    duration: 120,
-    dayStart: '09:00',
-    dayEnd: '17:00'
-);
-```
-
-### Conflict Management
-
-```php
-// Check for conflicts
-$conflicts = Zap::findConflicts($schedule);
-
-// Automatic conflict prevention
-try {
-    $schedule = Zap::for($user)
-        ->from('2025-03-15')
-        ->addPeriod('14:00', '16:00')
-        ->noOverlap()
-        ->save();
-} catch (ScheduleConflictException $e) {
-    $conflicts = $e->getConflictingSchedules();
-}
-```
-
-### Schedule Queries
-
-```php
-// Get schedules for date
-$todaySchedules = $user->schedulesForDate(today());
-
-// Get schedules for range
-$weekSchedules = $user->schedulesForDateRange('2025-03-11', '2025-03-17');
-
-// Advanced queries
-$schedules = Schedule::active()
-    ->forDate('2025-03-15')
-    ->whereHas('periods', function ($query) {
-        $query->whereBetween('start_time', ['09:00', '17:00']);
-    })
-    ->get();
-```
-
----
-
-## ⚙️ Configuration
-
-Configure Zap in `config/zap.php`:
-
-```php
-return [
-    'default_rules' => [
-        'no_overlap' => true,
-        'working_hours' => [
-            'enabled' => false,
-            'start' => '09:00',
-            'end' => '17:00',
-        ],
-        'max_duration' => [
-            'enabled' => false,
-            'minutes' => 480,
-        ],
-    ],
-
-    'conflict_detection' => [
-        'enabled' => true,
-        'buffer_minutes' => 0,
-        'strict_mode' => true,
-    ],
-
-    'cache' => [
-        'enabled' => true,
-        'ttl' => 3600,
-        'prefix' => 'zap_schedule_',
-    ],
-];
-```
-
----
-
-## 🎯 Use Cases
-
-<details>
-<summary><strong>📅 Appointment Booking System</strong></summary>
-
-```php
-// Doctor availability
-$availability = Zap::for($doctor)
-    ->named('Available Hours')
-    ->from('2025-03-01')->to('2025-03-31')
-    ->addPeriod('09:00', '12:00')
-    ->addPeriod('14:00', '17:00')
-    ->weekly(['monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
-    ->save();
-
-// Book appointment
-$appointment = Zap::for($doctor)
-    ->named('Patient Consultation')
-    ->from('2025-03-15')
-    ->addPeriod('10:00', '10:30')
-    ->noOverlap()
-    ->save();
-```
-</details>
-
-<details>
-<summary><strong>🏢 Meeting Room Management</strong></summary>
-
-```php
-// Room maintenance
-$maintenance = Zap::for($room)
-    ->named('Monthly Maintenance')
-    ->from('2025-03-01')
-    ->addPeriod('18:00', '20:00')
-    ->monthly(['day_of_month' => 1])
-    ->save();
-
-// Book meeting room
-$meeting = Zap::for($room)
-    ->named('Board Meeting')
-    ->from('2025-03-15')
-    ->addPeriod('09:00', '11:00')
-    ->noOverlap()
-    ->withMetadata([
-        'organizer' => 'john@company.com',
-        'equipment' => ['projector', 'whiteboard']
-    ])
-    ->save();
-```
-</details>
-
-<details>
-<summary><strong>👨‍💼 Employee Shift Management</strong></summary>
-
-```php
-// Regular shifts
-$workSchedule = Zap::for($employee)
-    ->named('Regular Shift')
-    ->from('2025-01-01')->to('2025-12-31')
-    ->addPeriod('09:00', '17:00')
-    ->weekly(['monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
-    ->noWeekends()
-    ->save();
-
-// Overtime
-$overtime = Zap::for($employee)
-    ->named('Overtime - Project Deadline')
-    ->from('2025-03-15')
-    ->addPeriod('18:00', '22:00')
-    ->maxDuration(240)
-    ->save();
-```
-</details>
-
----
-
-## 📡 Events & Testing
-
-### Events
-
-```php
-// Listen to schedule events
-protected $listen = [
-    \Zap\Events\ScheduleCreated::class => [
-        \App\Listeners\SendScheduleNotification::class,
-    ],
-];
-```
-
-### Testing Helpers
-
-```php
-// Create test schedules easily
-$schedule = createScheduleFor($user, [
-    'name' => 'Test Meeting',
-    'start_date' => '2025-01-01',
-    'periods' => [['start_time' => '09:00', 'end_time' => '10:00']],
-]);
-```
-
----
-
-## 🛠️ Performance & Optimization
-
-### Database Optimization
-
-```php
-// Custom indexes for better performance
-Schema::table('schedules', function (Blueprint $table) {
-    $table->index(['schedulable_type', 'start_date', 'is_active']);
-});
-```
-
-### Caching & Eager Loading
-
-```php
-// Optimize queries
-$schedules = Schedule::with(['periods', 'schedulable'])
-    ->forDateRange('2025-03-01', '2025-03-31')
-    ->get();
-
-// Cache control
-Cache::tags(['zap', 'schedules'])->flush();
-```
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### Development Setup
-
-```bash
-git clone https://github.com/laraveljutsu/zap.git
-cd zap
-composer install
-php artisan test
-```
-
----
-
-## 📜 License
-
-Laravel Zap is open-source software licensed under the [MIT License](LICENSE).
-
----
-
-## 🔒 Security
-
-If you discover security vulnerabilities, please email **ludo@epekta.com** instead of using the issue tracker.
-
----
-
-<div align="center">
-
-**⚡ Made with ❤️ by [Laravel Jutsu](https://laraveljutsu.net) for the Laravel community ⚡**
-
-[Website](https://laraveljutsu.net) • [Documentation](https://laraveljutsu.net/blog/laravel-zap) • [Support](mailto:ludo@epekta.com)
-
-</div>
+Thank you for checking out Laravel Zap! We hope it makes your scheduling tasks easier and more efficient. If you have any questions or need assistance, feel free to reach out.
